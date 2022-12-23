@@ -226,6 +226,13 @@ public:
  *     There's no extra effect if you have a fixed Z probe.
  */
 G29_TYPE GcodeSuite::G29() {
+
+  gcode.process_subcommands_now(PSTR("M853 L0 M0"));
+  gcode.process_subcommands_now(PSTR("G28"));
+  gcode.process_subcommands_now(PSTR("G91"));
+  gcode.process_subcommands_now(PSTR("G1 Z5 F300"));
+  gcode.process_subcommands_now(PSTR("G90"));
+  
   DEBUG_SECTION(log_G29, "G29", DEBUGGING(LEVELING));
 
   // Leveling state is persistent when done manually with multiple G29 commands
