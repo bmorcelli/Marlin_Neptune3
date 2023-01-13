@@ -86,7 +86,7 @@
 // @section machine
 // MAIN CONFIGURATION SWITCHES FOR FEATURES - IS_3D and IS_DUAL_Z are not compatible with each other!!
 // ctrl+/ with your cursor on a line will comment / uncomment that line.
-#define HAS_BLTOUCH               // uncomment if you have a BLTouch or clone
+// #define HAS_BLTOUCH               // uncomment if you have a BLTouch or clone
 // #define HAS_PROX_SENSOR           // uncomment if you are using a proximity sensor
 #define HAS_PI                    // uncomment if you want to connect a Pi-type device to the serial UART under the wifi socket
 // #define IS_3D                     // uncomment if you have dual extruders, Requires a TMC2208 driver in the empty socket.
