@@ -60,7 +60,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(TheFeralEngineer, Elegoo Neptune 2/2s)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(TheFeralEngineer, Elegoo Neptune 3 H43)" // Who made the changes.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -86,26 +86,25 @@
 // @section machine
 // MAIN CONFIGURATION SWITCHES FOR FEATURES - IS_3D and IS_DUAL_Z are not compatible with each other!!
 // ctrl+/ with your cursor on a line will comment / uncomment that line.
-// #define HAS_BLTOUCH               // uncomment if you have a BLTouch or clone
+#define HAS_BLTOUCH               // uncomment if you have a BLTouch or clone
 // #define HAS_PROX_SENSOR           // uncomment if you are using a proximity sensor
-#define HAS_PI                    // uncomment if you want to connect a Pi-type device to the serial UART under the wifi socket
+// #define HAS_PI                    // uncomment if you want to connect a Pi-type device to the serial UART under the wifi socket
 // #define IS_3D                     // uncomment if you have dual extruders, Requires a TMC2208 driver in the empty socket.
-// #define IS_DUAL_Z                 // uncomment if you have dual independent Z, Requires a TMC2208 driver in the empty socket.
-// #define HAS_EFIT                  // uncomment if you've installed the Creality E-Fit extruder
+#define IS_DUAL_Z                 // uncomment if you have dual independent Z, Requires a TMC2208 driver in the empty socket.
+#define HAS_EFIT                  // uncomment if you've installed the Creality E-Fit extruder
 #define NO_NOZZLE_PREHEAT         // uncomment if you don't want the nozzle to pre-heat for leveling. RECOMMENDED Enabled
+#define USE_RJ11
+#define NEPTUNE3
 
-#if ENABLED(IS_DUAL_Z) //z2 pins take on the e0 pin assignments, then e0 uses the e1 pin assignments. This *should* make Z2 the onboard driver and use the plug in socket for the extruder
-  #define Z2_ENABLE_PIN  E0_ENABLE_PIN
-  #define Z2_STEP_PIN    E0_STEP_PIN
-  #define Z2_DIR_PIN     E0_DIR_PIN
-  #define E0_ENABLE_PIN  E1_ENABLE_PIN
-  #define E0_STEP_PIN    E1_STEP_PIN
-  #define E0_DIR_PIN     E1_DIR_PIN
+#if ENABLED(IS_DUAL_Z) 
+  #define Z2_ENABLE_PIN  E1_ENABLE_PIN
+  #define Z2_STEP_PIN    E1_STEP_PIN
+  #define Z2_DIR_PIN     E1_DIR_PIN
 #endif
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_MKS_ROBIN_NANO_V1_3_F4
+  #define MOTHERBOARD  BOARD_MKS_E3D_V2 // BOARD_MKS_ROBIN_NANO_V1_3_F4
 #endif
 
 /**
@@ -116,7 +115,7 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT 3
+#define SERIAL_PORT 1
 
 /**
  * Serial Port Baud Rate
@@ -147,14 +146,14 @@
  * Currently only supported for AVR, DUE, LPC1768/9 and STM32/STM32F1
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_3 1
+// #define SERIAL_PORT_3 3
 //#define BAUDRATE_3 115200   // :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000] Enable to override BAUDRATE
 
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "Elegoo Neptune 2"
+#define CUSTOM_MACHINE_NAME "Elegoo Neptune 3"
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -179,10 +178,12 @@
  */
 #define X_DRIVER_TYPE  TMC2208_STANDALONE
 #define Y_DRIVER_TYPE  TMC2208_STANDALONE
-#define Z_DRIVER_TYPE  A4988
+#define Z_DRIVER_TYPE  TMC2208_STANDALONE
 //#define X2_DRIVER_TYPE A4988
 //#define Y2_DRIVER_TYPE A4988
-//#define Z2_DRIVER_TYPE A4988
+#if ENABLED(IS_DUAL_Z)
+  #define Z2_DRIVER_TYPE TMC2208_STANDALONE
+#endif
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
 //#define I_DRIVER_TYPE  A4988
@@ -191,8 +192,8 @@
 //#define U_DRIVER_TYPE  A4988
 //#define V_DRIVER_TYPE  A4988
 //#define W_DRIVER_TYPE  A4988
-#define E0_DRIVER_TYPE A4988
-//#define E1_DRIVER_TYPE A4988
+#define E0_DRIVER_TYPE TMC2208_STANDALONE
+//#define E1_DRIVER_TYPE TMC2208_STANDALONE
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
 //#define E4_DRIVER_TYPE A4988
@@ -1589,7 +1590,11 @@
  *     O-- FRONT --+
  */
 #if ENABLED(HAS_BLTOUCH) || ENABLED(HAS_PROX_SENSOR)
+  #if ENABLED(NEPTUNE2)
     #define NOZZLE_TO_PROBE_OFFSET { 34.0, -7.5, -1.1 } // my setup - P.T.
+  #elif ENABLED(NEPTUNE3)
+    #define NOZZLE_TO_PROBE_OFFSET { 47.5, -7.5, -1.1 } // my setup - P.T.
+  #endif
 #else
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0.2 } //strain gauge original offset
 #endif
@@ -3100,7 +3105,7 @@
  *  - Plug the microSD card into the back of the display.
  *  - Boot the display and wait for the update to complete.
  */
-//#define DGUS_LCD_UI ORIGIN
+#define DGUS_LCD_UI MKS
 #if DGUS_UI_IS(MKS)
   #define USE_MKS_GREEN_UI
 #endif
@@ -3178,7 +3183,7 @@
 // 480x320, 3.5", FSMC Display From MKS
 // Usually paired with MKS Robin Nano V1.2
 //
-#define MKS_ROBIN_TFT35
+//#define MKS_ROBIN_TFT35
 
 //
 // 480x272, 4.3", FSMC Display From MKS
@@ -3257,7 +3262,7 @@
  */
 //#define TFT_CLASSIC_UI
 //#define TFT_COLOR_UI
-#define TFT_LVGL_UI
+//#define TFT_LVGL_UI
 
 #if ENABLED(TFT_COLOR_UI)
   /**
@@ -3302,7 +3307,7 @@
 //
 // Touch Screen Settings
 //
-#define TOUCH_SCREEN
+//#define TOUCH_SCREEN
 #if ENABLED(TOUCH_SCREEN)
   #define BUTTON_DELAY_EDIT      50 // (ms) Button repeat delay for edit screens
   #define BUTTON_DELAY_MENU     250 // (ms) Button repeat delay for menus

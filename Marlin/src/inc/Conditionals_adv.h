@@ -1083,8 +1083,14 @@
   #if HAS_DWIN_E3V2 || IS_DWIN_MARLINUI || HAS_DGUS_LCD
     #if MB(BTT_SKR_MINI_E3_V1_0, BTT_SKR_MINI_E3_V1_2, BTT_SKR_MINI_E3_V2_0, BTT_SKR_MINI_E3_V3_0, BTT_SKR_E3_TURBO, BTT_OCTOPUS_V1_1)
       #define LCD_SERIAL_PORT 1
-    #elif MB(CREALITY_V24S1_301, CREALITY_V24S1_301F4, CREALITY_V423, MKS_ROBIN)
-      #define LCD_SERIAL_PORT 2 // Creality Ender3S1, MKS Robin
+    #elif MB(CREALITY_V24S1_301, CREALITY_V24S1_301F4, CREALITY_V423, MKS_E3D_V2)
+        #if ENABLED(USE_RJ11)
+          #define LCD_SERIAL_PORT   6
+          #define LCD_SERIAL_PORT_2 2
+        #else
+          #define LCD_SERIAL_PORT   2
+          #define LCD_SERIAL_PORT_2 6
+        #endif
     #else
       #define LCD_SERIAL_PORT 3 // Other boards
     #endif
