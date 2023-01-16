@@ -110,7 +110,8 @@
 #define HEATER_BED_PIN                      PA5   // HOT BED
 
 #define FAN_PIN                             PB0  // FAN
-// #define FAN1_PIN                            PA7   // FAN1
+// #define FAN1_PIN                            PB0   // FAN1
+
 
 #ifndef SDCARD_CONNECTION
   #define SDCARD_CONNECTION              ONBOARD
