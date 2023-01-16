@@ -76,7 +76,7 @@ enum processID : uint8_t {
 enum pidresult_t : uint8_t {
   PIDTEMP_START = 0,
   PIDTEMPBED_START,
-  PID_BAD_EXTRUDER_NUM,
+  PID_BAD_HEATER_ID,
   PID_TEMP_TOO_HIGH,
   PID_TUNING_TIMEOUT,
   PID_DONE,
@@ -107,14 +107,14 @@ typedef struct {
   uint16_t Coordinate_Color;
 
   // Temperatures
-  #if ENABLED(PIDTEMP)
-    int16_t HotendPidT = DEF_HOTENDPIDT;
-  #endif
-  #if ENABLED(PIDTEMPBED)
-    int16_t BedPidT = DEF_BEDPIDT;
-  #endif
-  #if (HAS_HOTEND || HAS_HEATED_BED) && HAS_PID_HEATING
+  #if DWIN_PID_TUNE
     int16_t PidCycles = DEF_PIDCYCLES;
+    #if ENABLED(PIDTEMP)
+      int16_t HotendPidT = DEF_HOTENDPIDT;
+    #endif
+    #if ENABLED(PIDTEMPBED)
+      int16_t BedPidT = DEF_BEDPIDT;
+    #endif
   #endif
   #if ENABLED(PREVENT_COLD_EXTRUSION)
     int16_t ExtMinT = EXTRUDE_MINTEMP;
@@ -141,7 +141,9 @@ static constexpr size_t eeprom_data_size = sizeof(HMI_data_t);
 
 typedef struct {
   int8_t Color[3];                    // Color components
-  TERN_(HAS_PID_HEATING, pidresult_t pidresult   = PID_DONE);
+  #if DWIN_PID_TUNE
+    pidresult_t pidresult = PID_DONE;
+  #endif
   uint8_t Select          = 0;        // Auxiliary selector variable
   AxisEnum axis           = X_AXIS;   // Axis Select
 } HMI_value_t;
@@ -213,10 +215,10 @@ void ParkHead();
   void ApplyLEDColor();
 #endif
 #if ENABLED(AUTO_BED_LEVELING_UBL)
-  void UBLTiltMesh();
+  void UBLMeshTilt();
   bool UBLValidMesh();
-  void UBLSaveMesh();
-  void UBLLoadMesh();
+  void UBLMeshSave();
+  void UBLMeshLoad();
 #endif
 #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
   void HostShutDown();
@@ -356,10 +358,14 @@ void Draw_Steps_Menu();
 #endif
 
 // PID
-void DWIN_PidTuning(pidresult_t result);
-#if ENABLED(PIDTEMP)
-  void Draw_HotendPID_Menu();
-#endif
-#if ENABLED(PIDTEMPBED)
-  void Draw_BedPID_Menu();
+#if DWIN_PID_TUNE
+  #include "../../../module/temperature.h"
+  void DWIN_StartM303(const bool seenC, const int c, const bool seenS, const heater_id_t hid, const celsius_t temp);
+  void DWIN_PidTuning(pidresult_t result);
+  #if ENABLED(PIDTEMP)
+    void Draw_HotendPID_Menu();
+  #endif
+  #if ENABLED(PIDTEMPBED)
+    void Draw_BedPID_Menu();
+  #endif
 #endif
