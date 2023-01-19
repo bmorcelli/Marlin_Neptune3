@@ -86,14 +86,14 @@
 // @section machine
 // MAIN CONFIGURATION SWITCHES FOR FEATURES - IS_3D and IS_DUAL_Z are not compatible with each other!!
 // ctrl+/ with your cursor on a line will comment / uncomment that line.
-#define HAS_BLTOUCH               // uncomment if you have a BLTouch or clone
+// #define HAS_BLTOUCH               // uncomment if you have a BLTouch or clone
 // #define HAS_PROX_SENSOR           // uncomment if you are using a proximity sensor
 // #define HAS_PI                    // uncomment if you want to connect a Pi-type device to the serial UART under the wifi socket
-// #define IS_3D                     // uncomment if you have dual extruders, Requires a TMC2208 driver in the empty socket.
-#define IS_DUAL_Z                 // uncomment if you have dual independent Z, Requires a TMC2208 driver in the empty socket.
-#define HAS_EFIT                  // uncomment if you've installed the Creality E-Fit extruder
+ #define IS_3D                     // uncomment if you have dual extruders, Requires a TMC2208 driver in the empty socket.
+// #define IS_DUAL_Z                 // uncomment if you have dual independent Z, Requires a TMC2208 driver in the empty socket.
+// #define HAS_EFIT                  // uncomment if you've installed the Creality E-Fit extruder
 #define NO_NOZZLE_PREHEAT         // uncomment if you don't want the nozzle to pre-heat for leveling. RECOMMENDED Enabled
-#define USE_RJ11
+// #define USE_RJ11
 #define NEPTUNE3
 
 #if ENABLED(IS_DUAL_Z) 
@@ -1628,12 +1628,12 @@
  * Useful for a strain gauge or piezo sensor that needs to factor out
  * elements such as cables pulling on the carriage.
  */
-//#define PROBE_TARE
+#define PROBE_TARE
 #if ENABLED(PROBE_TARE)
-  #define PROBE_TARE_TIME  200    // (ms) Time to hold tare pin
-  #define PROBE_TARE_DELAY 200    // (ms) Delay after tare before
-  #define PROBE_TARE_STATE HIGH   // State to write pin for tare
-  //#define PROBE_TARE_PIN PA5    // Override default pin
+  #define PROBE_TARE_TIME  20 //200    // (ms) Time to hold tare pin
+  #define PROBE_TARE_DELAY 250    // (ms) Delay after tare before
+  #define PROBE_TARE_STATE LOW   // State to write pin for tare
+  #define PROBE_TARE_PIN PC13    // Override default pin
   #if ENABLED(PROBE_ACTIVATION_SWITCH)
     //#define PROBE_TARE_ONLY_WHILE_INACTIVE  // Fail to tare/probe if PROBE_ACTIVATION_SWITCH is active
   #endif
@@ -1657,7 +1657,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-//#define MULTIPLE_PROBING 2
+#define MULTIPLE_PROBING 2
 //#define EXTRA_PROBING    1
 
 /**
@@ -1792,12 +1792,12 @@
  *  - Use a low value (i.e., Z_MIN_POS) if the nozzle falls down to the bed.
  *  - Use a large value (i.e., Z_MAX_POS) if the bed falls down, away from the nozzle.
  */
-//#define Z_IDLE_HEIGHT Z_HOME_POS
+#define Z_IDLE_HEIGHT Z_HOME_POS
 
 #define Z_HOMING_HEIGHT  2      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
                                   // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
 
-#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z
+#define Z_AFTER_HOMING  0.2     // (mm) Height to move to after homing Z
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
@@ -1823,7 +1823,7 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 260
+#define Z_MAX_POS 285
 //#define I_MIN_POS 0
 //#define I_MAX_POS 50
 //#define J_MIN_POS 0
@@ -1993,9 +1993,9 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-#if ENABLED(HAS_BLTOUCH)
-  #define AUTO_BED_LEVELING_BILINEAR
-#endif
+//#if ENABLED(HAS_BLTOUCH)
+#define AUTO_BED_LEVELING_BILINEAR
+//#endif
 //#define AUTO_BED_LEVELING_UBL
 #if NONE(HAS_BLTOUCH)
   #define MESH_BED_LEVELING
@@ -2015,7 +2015,7 @@
 //#define PREHEAT_BEFORE_LEVELING
 #if ENABLED(PREHEAT_BEFORE_LEVELING)
   #define LEVELING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
-  #define LEVELING_BED_TEMP    65
+  #define LEVELING_BED_TEMP    60
 #endif
 
 /**
@@ -2077,7 +2077,7 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 6
+  #define GRID_MAX_POINTS_X 4 //6
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
@@ -2087,7 +2087,7 @@
 
     // Beyond the probed grid, continue the implied tilt?
     // Default is to maintain the height of the nearest edge.
-    //#define EXTRAPOLATE_BEYOND_GRID
+    #define EXTRAPOLATE_BEYOND_GRID
 
     //
     // Subdivision of the grid by Catmull-Rom method.
@@ -2188,7 +2188,7 @@
  * Commands to execute at the end of G29 probing.
  * Useful to retract or move the Z probe out of the way.
  */
-#define Z_PROBE_END_SCRIPT "M500\nM501\nG28 Z\nG90"
+#define Z_PROBE_END_SCRIPT "M500\nM501\nG28 Z\nG90\nG1 Z0.1 F60"
 
 // @section homing
 
@@ -2214,9 +2214,9 @@
  * - Allows Z homing only when XY positions are known and trusted.
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
-#if ENABLED(HAS_BLTOUCH)
-  #define Z_SAFE_HOMING
-#endif
+//#if ENABLED(HAS_BLTOUCH)
+#define Z_SAFE_HOMING
+//#endif
 
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
@@ -2224,7 +2224,7 @@
 #endif
 
 // Homing speeds (linear=mm/min, rotational=°/min)
-#define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (10*60) }
+#define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (1*60) }
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
@@ -2341,14 +2341,14 @@
 // Preheat Constants - Up to 10 are supported without changes
 //
 #define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 215
+#define PREHEAT_1_TEMP_HOTEND 200
 #define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_TEMP_CHAMBER 35
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
 #define PREHEAT_2_TEMP_HOTEND 240
-#define PREHEAT_2_TEMP_BED    110
+#define PREHEAT_2_TEMP_BED    80
 #define PREHEAT_2_TEMP_CHAMBER 35
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
@@ -2593,6 +2593,7 @@
  * you must uncomment the following option or it won't work.
  */
 #define SDSUPPORT
+#define MKS_TEST 1
 
 /**
  * SD CARD: ENABLE CRC
